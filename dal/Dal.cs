@@ -84,5 +84,43 @@ namespace malshinon1.dal
             return person;
 
         }
+
+        public Person GetPersonBySecretCode(string secretCode)
+        {
+            Person person = null;
+            string query = "SELECT * FROM people WHERE  secret_code = @secret_code";
+            try
+            {
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@secret_code", secretCode);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    person = new Person
+                    (
+                        reader.GetInt32("id"),
+                        reader.GetString("first_name"),
+                        reader.GetString("last_name"),
+                        reader.GetString("secret_code"),
+                        reader.GetString("type"),
+                        reader.GetInt32("num_reports"),
+                        reader.GetInt32("num_mentions")
+                    );
+                }
+                reader.Close();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error retrieving person: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+            return person;
+
+
+        }
     }
 }
