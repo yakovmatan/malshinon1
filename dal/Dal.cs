@@ -172,5 +172,26 @@ namespace malshinon1.dal
                 this.Conn.Close();
             }
         }
+
+        public void UpdateMentionCount(string secretCode)
+        {
+            string query = "UPDATE people SET  num_mentions = num_mentions + 1 WHERE secret_code = @secret_code";
+
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@secret_code", secretCode);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updating MentionCount: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+        }
     }
 }
