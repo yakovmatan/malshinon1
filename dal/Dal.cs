@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Protobuf.Compiler;
 using malshinon1.people;
+using malshinon1.reports;
 using MySql.Data.MySqlClient;
 
 namespace malshinon1.dal
@@ -40,7 +42,7 @@ namespace malshinon1.dal
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error adding people" + ex.Message);
+                Console.WriteLine("Error adding person" + ex.Message);
             }
             finally
             {
@@ -54,6 +56,7 @@ namespace malshinon1.dal
             string query = "SELECT * FROM people WHERE first_name = @first_name";
             try
             {
+                this.Conn.Open();
                 var cmd = this.Command(query);
                 cmd.Parameters.AddWithValue("@first_name", name);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -91,6 +94,7 @@ namespace malshinon1.dal
             string query = "SELECT * FROM people WHERE  secret_code = @secret_code";
             try
             {
+                this.Conn.Open();
                 var cmd = this.Command(query);
                 cmd.Parameters.AddWithValue("@secret_code", secretCode);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -121,6 +125,52 @@ namespace malshinon1.dal
             return person;
 
 
+        }
+
+        public void InsertIntelReport(Report report)
+        {
+            string query = @"INSERT INTO intelreports (reporter_id, target_id, text)
+                             VALUES (@reporter_id, @target_id, @text)";
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@reporter_id", report.reporterId);
+                cmd.Parameters.AddWithValue("@target_id", report.targetId);
+                cmd.Parameters.AddWithValue("@text", report.text);
+                
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error adding report" + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+
+        }
+
+        public void UpdateReportCount(string secretCode)
+        {
+            string query = "UPDATE people SET  num_reports = num_reports + 1 WHERE secret_code = @secret_code";
+
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@secret_code", secretCode);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updating ReportCount: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
         }
     }
 }
