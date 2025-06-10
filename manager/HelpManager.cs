@@ -43,5 +43,25 @@ namespace malshinon1.manager
             this.Dal.InsertNewPerson(person);
 
         }
+
+        public string EnterReport()
+        {
+            Console.WriteLine("Enter the report but make sure that target is first");
+            string text = Console.ReadLine();
+            return text;
+        }
+
+        public (string firstName,string lastName) ExtractName(string text)
+        {
+            string[] words = text.Split(' ');
+            if (words.Length == 2)
+            {
+                return (words[0], words[1]);
+            }
+            else
+            {
+                return ("Unknown", "Unknown");
+            }
+        }
     }
 }
