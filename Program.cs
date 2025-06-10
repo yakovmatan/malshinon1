@@ -10,6 +10,7 @@ namespace malshinon1
     {
         static void Main(string[] args)
         {
+
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -194,9 +195,9 @@ namespace malshinon1.dal
             }
         }
 
-        public (int count, double avgLength) GetReporterStats(string reporterId)
+        public (int count, double avgLength) GetReporterStats(int reporterId)
         {
-            string query = @"SELECT COUNT(*) AS count, AVG(CHAR_LENGTH(report_text)) AS avgLength FROM intelreports WHERE reporter_id = @reporter_id";
+            string query = @"SELECT COUNT(*) AS count, AVG(CHAR_LENGTH(text)) AS avgLength FROM intelreports WHERE reporter_id = @reporter_id";
             int count = 0;
             double avgLength = 0;
             try
@@ -226,5 +227,43 @@ namespace malshinon1.dal
 
 
         }
+
+        public (int totalMentions, int mentionsLast15Min) GetTargetStats(string secretCode)
+        {
+            string query = @"SELECT p.num_mentions AS totalMentions, COUNT(i.id) AS mentionsLast15Min
+                             FROM People p
+                             LEFT JOIN intelreports i 
+                             ON i.target_id = p.id 
+                             AND i.timestamp >= NOW() - INTERVAL 15 MINUTE
+                             WHERE p.secret_code = @secret_code
+                             GROUP BY p.num_mentions;";
+            int totalMentions = 0;
+            int mentionsLast15Min = 0;
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@secret_code", secretCode);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    totalMentions = reader.GetInt32("totalMentions");
+                    mentionsLast15Min = reader.GetInt32("mentionsLast15Min");
+
+                }
+                reader.Close();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error retrieving target stats: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+            return (totalMentions, mentionsLast15Min);
+        }
+
     }
 }
