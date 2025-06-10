@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Google.Protobuf.Compiler;
 using malshinon1.people;
+using malshinon1.reports;
 using MySql.Data.MySqlClient;
 
 namespace malshinon1.dal
@@ -40,7 +42,7 @@ namespace malshinon1.dal
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error adding people" + ex.Message);
+                Console.WriteLine("Error adding person" + ex.Message);
             }
             finally
             {
@@ -54,6 +56,7 @@ namespace malshinon1.dal
             string query = "SELECT * FROM people WHERE first_name = @first_name";
             try
             {
+                this.Conn.Open();
                 var cmd = this.Command(query);
                 cmd.Parameters.AddWithValue("@first_name", name);
                 MySqlDataReader reader = cmd.ExecuteReader();
@@ -82,6 +85,145 @@ namespace malshinon1.dal
                 this.Conn.Close();
             }
             return person;
+
+        }
+
+        public Person GetPersonBySecretCode(string secretCode)
+        {
+            Person person = null;
+            string query = "SELECT * FROM people WHERE  secret_code = @secret_code";
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@secret_code", secretCode);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    person = new Person
+                    (
+                        reader.GetInt32("id"),
+                        reader.GetString("first_name"),
+                        reader.GetString("last_name"),
+                        reader.GetString("secret_code"),
+                        reader.GetString("type"),
+                        reader.GetInt32("num_reports"),
+                        reader.GetInt32("num_mentions")
+                    );
+                }
+                reader.Close();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error retrieving person: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+            return person;
+
+
+        }
+
+        public void InsertIntelReport(Report report)
+        {
+            string query = @"INSERT INTO intelreports (reporter_id, target_id, text)
+                             VALUES (@reporter_id, @target_id, @text)";
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@reporter_id", report.reporterId);
+                cmd.Parameters.AddWithValue("@target_id", report.targetId);
+                cmd.Parameters.AddWithValue("@text", report.text);
+                
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error adding report" + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+
+        }
+
+        public void UpdateReportCount(string secretCode)
+        {
+            string query = "UPDATE people SET  num_reports = num_reports + 1 WHERE secret_code = @secret_code";
+
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@secret_code", secretCode);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updating ReportCount: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+        }
+
+        public void UpdateMentionCount(string secretCode)
+        {
+            string query = "UPDATE people SET  num_mentions = num_mentions + 1 WHERE secret_code = @secret_code";
+
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@secret_code", secretCode);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updating MentionCount: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+        }
+
+        public (int count, double avgLength) GetReporterStats(string reporterId)
+        {
+            string query = @"SELECT COUNT(*) AS count, AVG(CHAR_LENGTH(report_text)) AS avgLength FROM intelreports WHERE reporter_id = @reporter_id";
+            int count = 0;
+            double avgLength = 0;
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@reporter_id", reporterId);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    count = reader.GetInt32("count");
+                    avgLength = reader.IsDBNull(reader.GetOrdinal("avgLength")) ? 0.0 : reader.GetDouble("avgLength");
+
+                }
+                reader.Close();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error retrieving reporter stats: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+            return (count, avgLength);
+
 
         }
     }
