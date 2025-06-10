@@ -56,7 +56,7 @@ namespace malshinon1.manager
         public (string firstName,string lastName) ExtractName(string text)
         {
             string[] words = text.Split(' ');
-            if (words.Length == 2)
+            if (words.Length >= 2)
             {
                 return (words[0], words[1]);
             }

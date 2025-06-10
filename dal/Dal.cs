@@ -255,7 +255,7 @@ namespace malshinon1.dal
         public (int totalMentions, int mentionsLast15Min) GetTargetStats(string secretCode)
         {
             string query = @"SELECT p.num_mentions AS totalMentions, COUNT(i.id) AS mentionsLast15Min
-                             FROM People p
+                             FROM people p
                              LEFT JOIN intelreports i 
                              ON i.target_id = p.id 
                              AND i.timestamp >= NOW() - INTERVAL 15 MINUTE
