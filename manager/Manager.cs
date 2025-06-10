@@ -37,11 +37,13 @@ namespace malshinon1.manager
             {
                 this.Helper.CreateNewPerson(firstNameOfTarget, lastNameOfTarget, "target");
             }
-            var person = this.Dal.GetPersonByName(firstNameReporter, lastNameReporter);
-            if (reporter.type == "target")
+            var target = this.Dal.GetPersonByName(firstNameOfTarget, lastNameOfTarget);
+            if (target.type == "target")
             {
                 this.Dal.UpdateStatusToBoth(firstNameReporter, lastNameReporter);
             }
+            this.Dal.UpdateMentionCount(target.secretCode);
+            this.Helper.CreateNewReport(firstNameOfTarget,lastNameOfTarget,firstNameReporter,lastNameReporter,report);
 
 
 
