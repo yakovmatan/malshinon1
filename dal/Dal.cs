@@ -177,7 +177,7 @@ namespace malshinon1.dal
 
         public void UpdateStatusToBoth(string firstName, string lastName)
         {
-            string query = "UPDATE people SET type = both WHERE first_name = @first_name AND last_name = @last_name";
+            string query = "UPDATE people SET type = 'both' WHERE first_name = @first_name AND last_name = @last_name";
 
             try
             {

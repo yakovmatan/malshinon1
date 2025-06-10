@@ -38,7 +38,7 @@ namespace malshinon1.manager
                 this.Helper.CreateNewPerson(firstNameOfTarget, lastNameOfTarget, "target");
             }
             var target = this.Dal.GetPersonByName(firstNameOfTarget, lastNameOfTarget);
-            if (target.type == "target")
+            if (target.type == "reporter")
             {
                 this.Dal.UpdateStatusToBoth(firstNameReporter, lastNameReporter);
             }
