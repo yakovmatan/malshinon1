@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using malshinon1.dal;
 using malshinon1.people;
+using malshinon1.reports;
 
 namespace malshinon1.manager
 {
@@ -62,6 +63,16 @@ namespace malshinon1.manager
             {
                 return ("Unknown", "Unknown");
             }
+        }
+
+        public void CreateNewReport(string firstNameTarget,string lastNameTarget,string firstNameReporter,string lastNameReporter,string text)
+        {
+            var personTarget = this.Dal.GetPersonByName(firstNameTarget, lastNameTarget);
+            int idTarget = personTarget.id;
+            var personReporter = this.Dal.GetPersonByName(firstNameReporter, lastNameReporter);
+            int idReporter = personReporter.id;
+            Report report = new Report(idReporter, idTarget, text);
+            this.Dal.InsertIntelReport(report);
         }
     }
 }
