@@ -4,14 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using malshinon1.dal;
+using malshinon1.people;
 
 namespace malshinon1.manager
 {
-    internal class Maneger
+    internal class HelpManeger
     {
         private Dal Dal;
 
-        public Maneger(Dal dal)
+        public HelpManeger(Dal dal)
         {
             this.Dal = dal;
         }
@@ -35,5 +36,12 @@ namespace malshinon1.manager
             return false;
         }
 
+        public void CreateNewPerson(string firstName, string lastName,string type)
+        {
+            string secretCode = SecretCode.CreateSecretCode(firstName, lastName);
+            Person person = new Person(firstName, lastName,secretCode,type);
+            this.Dal.InsertNewPerson(person);
+
+        }
     }
 }

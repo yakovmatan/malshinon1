@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace malshinon1.people
 {
-    internal class SecretCode
+    internal static class SecretCode
     {
-        public string CreateSecretCode(string firstName, string lastName)
+        public static string CreateSecretCode(string firstName, string lastName)
         {
             string secretCode = "";
             for (int i = 0; i < (firstName.Length < lastName.Length ? firstName.Length : lastName.Length); i++)
