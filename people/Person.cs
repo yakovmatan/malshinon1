@@ -26,5 +26,14 @@ namespace malshinon1.people
             this.numReports = numReports;
             this.numMentions = numMentions;
         }
+
+        public Person(string firstName, string lastName, string secretCode, string type) 
+        {
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.secretCode = secretCode;
+            this.type = type;
+            
+        }
     }
 }
