@@ -37,6 +37,24 @@ namespace malshinon1.manager
             return false;
         }
 
+        public void UpdateStatusForReporter(string firstName, string lastName)
+        {
+            var person = this.Dal.GetPersonByName(firstName,lastName);
+            if (person.type == "reporter")
+            {
+                this.Dal.UpdateStatusToBoth(firstName, lastName);
+            }
+        }
+
+        public void UpdateStatusForTarget(string firstName, string lastName)
+        {
+            var person = this.Dal.GetPersonByName(firstName, lastName);
+            if (person.type == "target")
+            {
+                this.Dal.UpdateStatusToBoth(firstName, lastName);
+            }
+        }
+
         public void CreateNewPerson(string firstName, string lastName,string type)
         {
             string secretCode = SecretCode.CreateSecretCode(firstName, lastName);
