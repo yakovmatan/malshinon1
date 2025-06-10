@@ -193,5 +193,38 @@ namespace malshinon1.dal
                 this.Conn.Close();
             }
         }
+
+        public (int count, double avgLength) GetReporterStats(string reporterId)
+        {
+            string query = @"SELECT COUNT(*) AS count, AVG(CHAR_LENGTH(report_text)) AS avgLength FROM intelreports WHERE reporter_id = @reporter_id";
+            int count = 0;
+            double avgLength = 0;
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@reporter_id", reporterId);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    count = reader.GetInt32("count");
+                    avgLength = reader.IsDBNull(reader.GetOrdinal("avgLength")) ? 0.0 : reader.GetDouble("avgLength");
+
+                }
+                reader.Close();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error retrieving reporter stats: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+            return (count, avgLength);
+
+
+        }
     }
 }
