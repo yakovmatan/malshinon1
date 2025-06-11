@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using malshinon1.dal;
 using malshinon1.manager;
+using malshinon1.menu;
 
 namespace malshinon1
 {
@@ -12,10 +13,8 @@ namespace malshinon1
     {
         static void Main(string[] args)
         {
-            var dal = new Dal();
-            var manager = new Manager(dal);
-            manager.StartUsing();
-
+            Menu menu = new Menu();
+            menu.ChooseLogIn();
         }
     }
 }

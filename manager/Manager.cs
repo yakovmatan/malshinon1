@@ -27,11 +27,7 @@ namespace malshinon1.manager
                 this.Helper.CreateNewPerson(firstNameReporter, lastNameReporter,"reporter");
             }
             var reporter = this.Dal.GetPersonByName(firstNameReporter, lastNameReporter);
-            if (this.PotentialAgent(reporter.id))
-            {
-                this.Dal.UpdateStatus(reporter.firstName, reporter.lastName,"potential_agent");
-            }
-            else if (reporter.type == "target")
+            if (reporter.type == "target")
             {
                 this.Dal.UpdateStatus(firstNameReporter, lastNameReporter,"both");
             }
@@ -49,6 +45,10 @@ namespace malshinon1.manager
             }
             this.Dal.UpdateMentionCount(target.secretCode);
             this.Helper.CreateNewReport(firstNameOfTarget,lastNameOfTarget,firstNameReporter,lastNameReporter,report);
+            if (this.PotentialAgent(reporter.id))
+            {
+                this.Dal.UpdateStatus(reporter.firstName, reporter.lastName, "potential_agent");
+            }
             if (this.Helper.DangerTarget(target.secretCode))
             {
                 this.Helper.createAlert(target.id);

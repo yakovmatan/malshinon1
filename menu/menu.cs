@@ -33,6 +33,7 @@ namespace malshinon1.menu
             Console.WriteLine("Enter your choose");
             Console.WriteLine("1.Show potential agents");
             Console.WriteLine("2.Show dangerous targets");
+            Console.WriteLine("0.To exit");
             Console.WriteLine("=====================");
         }
 
@@ -82,12 +83,40 @@ namespace malshinon1.menu
                         break;
 
                     case "1":
-                        this.dal.GetAllPotentialAgent();
-                        break;
+                        var potentialAgent = this.dal.GetAllPotentialAgent();
+                        if (potentialAgent.Count > 0)
+                        {
+                            foreach (var agent in potentialAgent)
+                            {
+                                Console.WriteLine(agent.firstName);
+                                Console.WriteLine(agent.lastName);
+                                Console.WriteLine(agent.secretCode);
+                                Console.WriteLine(agent.numReports);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine(" No potential agant found.");
+                        }
+
+                            break;
 
                     case "2":
-                        this.dal.GetAllDangerTarget();
-                        break;
+                        var dangerTarget = this.dal.GetAllDangerTarget();
+                        if (dangerTarget.Count > 0)
+                        {
+                            foreach (var target in dangerTarget)
+                            {
+                                Console.WriteLine(target.firstName);
+                                Console.WriteLine(target.lastName);
+                                Console.WriteLine(target.alert);
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No danger targets found.");
+                        }
+                            break;
 
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
