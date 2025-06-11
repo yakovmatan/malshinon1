@@ -198,7 +198,6 @@ namespace malshinon1.dal
             }
         }
 
-
         public void UpdateMentionCount(string secretCode)
         {
             string query = "UPDATE people SET  num_mentions = num_mentions + 1 WHERE secret_code = @secret_code";
@@ -253,16 +252,14 @@ namespace malshinon1.dal
 
         }
 
-        public (int totalMentions, int mentionsLast15Min) GetTargetStats(string secretCode)
+        public int  GetTargetStats(string secretCode)
         {
-            string query = @"SELECT p.num_mentions AS totalMentions, COUNT(i.id) AS mentionsLast15Min
+            string query = @"SELECT COUNT(i.id) AS mentionsLast15Min
                              FROM people p
                              LEFT JOIN intelreports i 
                              ON i.target_id = p.id 
                              AND i.timestamp >= NOW() - INTERVAL 15 MINUTE
-                             WHERE p.secret_code = @secret_code
-                             GROUP BY p.num_mentions;";
-            int totalMentions = 0;
+                             WHERE p.secret_code = @secret_code";
             int mentionsLast15Min = 0;
             try
             {
@@ -272,7 +269,6 @@ namespace malshinon1.dal
                 MySqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    totalMentions = reader.GetInt32("totalMentions");
                     mentionsLast15Min = reader.GetInt32("mentionsLast15Min");
 
                 }
@@ -287,7 +283,7 @@ namespace malshinon1.dal
             {
                 this.Conn.Close();
             }
-            return (totalMentions, mentionsLast15Min);
+            return mentionsLast15Min;
         }
 
     }
