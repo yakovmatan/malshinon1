@@ -27,6 +27,7 @@ namespace malshinon1.people
             this.numMentions = numMentions;
         }
 
+
         public Person(string firstName, string lastName, string secretCode, string type) 
         {
             this.firstName = firstName;
