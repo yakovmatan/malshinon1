@@ -314,7 +314,7 @@ namespace malshinon1.dal
         public List<DangerTarget> GetAllDangerTarget()
         {
             List<DangerTarget> dangerTargets = new List<DangerTarget>();
-            string query = "SELECT p.first_name, p.last_name, a.alert FROM alerts a JOIN people p ON p.id = a.target_id";
+            string query = "SELECT p.first_name, p.last_name, a.alert FROM alerts a JOIN people p ON p.id = a.target_id GROUP BY p.id";
             try
             {
                 this.Conn.Open();

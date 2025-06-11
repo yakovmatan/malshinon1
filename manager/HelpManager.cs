@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using malshinon1.alerts;
 using malshinon1.dal;
 using malshinon1.people;
 using malshinon1.reports;
@@ -74,6 +75,22 @@ namespace malshinon1.manager
             int idReporter = personReporter.id;
             Report report = new Report(idReporter, idTarget, text);
             this.Dal.InsertIntelReport(report);
+        }
+
+        public bool DangerTarget(string secretCode)
+        {
+            int numOfReportsIn15Min = this.Dal.GetTargetStats(secretCode);
+            if (numOfReportsIn15Min >= 3)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void createAlert(int targetId)
+        {
+            Alert alert = new Alert(targetId, "poses a potential threat");
+            this.Dal.InsertAlert(alert);
         }
     }
 }

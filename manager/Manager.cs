@@ -49,6 +49,10 @@ namespace malshinon1.manager
             }
             this.Dal.UpdateMentionCount(target.secretCode);
             this.Helper.CreateNewReport(firstNameOfTarget,lastNameOfTarget,firstNameReporter,lastNameReporter,report);
+            if (this.Helper.DangerTarget(target.secretCode))
+            {
+                this.Helper.createAlert(target.id);
+            }
         }
 
         public bool PotentialAgent(int reporterId)
@@ -59,6 +63,8 @@ namespace malshinon1.manager
                 return true;
             }
             return false;
-        }
+        }  
+        
+        
     }
 }
