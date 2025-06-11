@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf.Compiler;
+using malshinon1.alerts;
 using malshinon1.people;
 using malshinon1.reports;
 using MySql.Data.MySqlClient;
@@ -198,7 +199,6 @@ namespace malshinon1.dal
             }
         }
 
-
         public void UpdateMentionCount(string secretCode)
         {
             string query = "UPDATE people SET  num_mentions = num_mentions + 1 WHERE secret_code = @secret_code";
@@ -253,16 +253,14 @@ namespace malshinon1.dal
 
         }
 
-        public (int totalMentions, int mentionsLast15Min) GetTargetStats(string secretCode)
+        public int  GetTargetStats(string secretCode)
         {
-            string query = @"SELECT p.num_mentions AS totalMentions, COUNT(i.id) AS mentionsLast15Min
+            string query = @"SELECT COUNT(i.id) AS mentionsLast15Min
                              FROM people p
                              LEFT JOIN intelreports i 
                              ON i.target_id = p.id 
                              AND i.timestamp >= NOW() - INTERVAL 15 MINUTE
-                             WHERE p.secret_code = @secret_code
-                             GROUP BY p.num_mentions;";
-            int totalMentions = 0;
+                             WHERE p.secret_code = @secret_code";
             int mentionsLast15Min = 0;
             try
             {
@@ -272,7 +270,6 @@ namespace malshinon1.dal
                 MySqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
-                    totalMentions = reader.GetInt32("totalMentions");
                     mentionsLast15Min = reader.GetInt32("mentionsLast15Min");
 
                 }
@@ -287,8 +284,98 @@ namespace malshinon1.dal
             {
                 this.Conn.Close();
             }
-            return (totalMentions, mentionsLast15Min);
+            return mentionsLast15Min;
         }
 
+        public void InsertAlert(Alert alert)
+        {
+            string query = @"INSERT INTO alerts (target_id, alert)
+                             VALUES (@target_id, @alert)";
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@target_id", alert.targetId);
+                cmd.Parameters.AddWithValue("@text", alert.alert);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error adding alert" + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+
+        }
+
+        public List<DangerTarget> GetAllDangerTarget()
+        {
+            List<DangerTarget> dangerTargets = new List<DangerTarget>();
+            string query = "SELECT p.first_name, p.last_name, a.alert FROM alerts a JOIN people p ON p.id = a.target_id GROUP BY p.id";
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    DangerTarget target = new DangerTarget(
+                        reader.GetString("first_name"),
+                        reader.GetString("last_name"),
+                        reader.GetString("alert")
+                        );
+                    dangerTargets.Add(target);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error retrieving targets: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+            return dangerTargets;
+        }
+
+        public List<Person> GetAllPotentialAgent()
+        {
+            List<Person> potentialAgents = new List<Person>();
+            string query = "SELECT * FROM people WHERE type = 'potential_agent";
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    Person agent = new Person
+                        (
+                        reader.GetInt32("id"),
+                        reader.GetString("first_name"),
+                        reader.GetString("last_name"),
+                        reader.GetString("secret_code"),
+                        reader.GetString("type"),
+                        reader.GetInt32("num_reports"),
+                        reader.GetInt32("num_mentions")
+                        );
+                    potentialAgents.Add(agent);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error retrieving potential agents: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+            return potentialAgents;
+        }
     }
 }

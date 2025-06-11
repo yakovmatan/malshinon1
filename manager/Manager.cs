@@ -49,16 +49,22 @@ namespace malshinon1.manager
             }
             this.Dal.UpdateMentionCount(target.secretCode);
             this.Helper.CreateNewReport(firstNameOfTarget,lastNameOfTarget,firstNameReporter,lastNameReporter,report);
+            if (this.Helper.DangerTarget(target.secretCode))
+            {
+                this.Helper.createAlert(target.id);
+            }
         }
 
         public bool PotentialAgent(int reporterId)
         {
             (int count, double avgLength) = this.Dal.GetReporterStats(reporterId);
-            if (count >= 20 ||  avgLength >= 100)
+            if (count >= 10 ||  avgLength >= 100)
             {
                 return true;
             }
             return false;
-        }
+        }  
+        
+        
     }
 }
