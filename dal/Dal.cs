@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf.Compiler;
+using malshinon1.alerts;
 using malshinon1.people;
 using malshinon1.reports;
 using MySql.Data.MySqlClient;
@@ -286,5 +287,28 @@ namespace malshinon1.dal
             return mentionsLast15Min;
         }
 
+        public void InsertAlert(Alert alert)
+        {
+            string query = @"INSERT INTO alerts (target_id, alert)
+                             VALUES (@target_id, @alert)";
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@target_id", alert.targetId);
+                cmd.Parameters.AddWithValue("@text", alert.alert);
+
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error adding alert" + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+
+        }
     }
 }

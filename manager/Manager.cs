@@ -54,7 +54,7 @@ namespace malshinon1.manager
         public bool PotentialAgent(int reporterId)
         {
             (int count, double avgLength) = this.Dal.GetReporterStats(reporterId);
-            if (count >= 20 ||  avgLength >= 100)
+            if (count >= 10 ||  avgLength >= 100)
             {
                 return true;
             }
