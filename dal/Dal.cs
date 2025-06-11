@@ -345,7 +345,7 @@ namespace malshinon1.dal
         public List<Person> GetAllPotentialAgent()
         {
             List<Person> potentialAgents = new List<Person>();
-            string query = "SELECT * FROM people WHERE type = 'potential_agent";
+            string query = "SELECT * FROM people WHERE type = 'potential_agent'";
             try
             {
                 this.Conn.Open();

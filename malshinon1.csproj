@@ -100,6 +100,7 @@
     <Compile Include="dal\Dal.cs" />
     <Compile Include="manager\HelpManager.cs" />
     <Compile Include="manager\Manager.cs" />
+    <Compile Include="menu\Menu.cs" />
     <Compile Include="people\Person.cs" />
     <Compile Include="people\SecretCode.cs" />
     <Compile Include="Program.cs" />
