@@ -51,15 +51,16 @@ namespace malshinon1.dal
             }
         }
 
-        public Person GetPersonByName(string name)
+        public Person GetPersonByName(string firstName, string lastName)
         {
             Person person = null;
-            string query = "SELECT * FROM people WHERE first_name = @first_name";
+            string query = "SELECT * FROM people WHERE first_name = @first_name AND last_name = @last_name";
             try
             {
                 this.Conn.Open();
                 var cmd = this.Command(query);
-                cmd.Parameters.AddWithValue("@first_name", name);
+                cmd.Parameters.AddWithValue("@first_name", firstName);
+                cmd.Parameters.AddWithValue("@last_name", lastName);
                 MySqlDataReader reader = cmd.ExecuteReader();
                 if (reader.Read())
                 {
@@ -174,6 +175,29 @@ namespace malshinon1.dal
             }
         }
 
+        public void UpdateStatusToBoth(string firstName, string lastName)
+        {
+            string query = "UPDATE people SET type = 'both' WHERE first_name = @first_name AND last_name = @last_name";
+
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                cmd.Parameters.AddWithValue("@first_name", firstName);
+                cmd.Parameters.AddWithValue("@last_name", lastName);
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updating status: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+        }
+
+
         public void UpdateMentionCount(string secretCode)
         {
             string query = "UPDATE people SET  num_mentions = num_mentions + 1 WHERE secret_code = @secret_code";
@@ -231,7 +255,7 @@ namespace malshinon1.dal
         public (int totalMentions, int mentionsLast15Min) GetTargetStats(string secretCode)
         {
             string query = @"SELECT p.num_mentions AS totalMentions, COUNT(i.id) AS mentionsLast15Min
-                             FROM People p
+                             FROM people p
                              LEFT JOIN intelreports i 
                              ON i.target_id = p.id 
                              AND i.timestamp >= NOW() - INTERVAL 15 MINUTE

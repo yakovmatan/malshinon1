@@ -96,7 +96,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dal\Dal.cs" />
+    <Compile Include="manager\HelpManager.cs" />
+    <Compile Include="manager\Manager.cs" />
     <Compile Include="people\Person.cs" />
+    <Compile Include="people\SecretCode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="reports\Report.cs" />
@@ -110,5 +113,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

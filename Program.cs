@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using malshinon1.dal;
+using malshinon1.manager;
 
 namespace malshinon1
 {
@@ -10,6 +12,9 @@ namespace malshinon1
     {
         static void Main(string[] args)
         {
+            var dal = new Dal();
+            var manager = new Manager(dal);
+            manager.StartUsing();
 
         }
     }
