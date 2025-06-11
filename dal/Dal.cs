@@ -310,5 +310,72 @@ namespace malshinon1.dal
             }
 
         }
+
+        public List<DangerTarget> GetAllDangerTarget()
+        {
+            List<DangerTarget> dangerTargets = new List<DangerTarget>();
+            string query = "SELECT p.first_name, p.last_name, a.alert FROM alerts a JOIN people p ON p.id = a.target_id";
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    DangerTarget target = new DangerTarget(
+                        reader.GetString("first_name"),
+                        reader.GetString("last_name"),
+                        reader.GetString("alert")
+                        );
+                    dangerTargets.Add(target);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error retrieving targets: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+            return dangerTargets;
+        }
+
+        public List<Person> GetAllPotentialAgent()
+        {
+            List<Person> potentialAgents = new List<Person>();
+            string query = "SELECT * FROM people WHERE type = 'potential_agent";
+            try
+            {
+                this.Conn.Open();
+                var cmd = this.Command(query);
+                MySqlDataReader reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    Person agent = new Person
+                        (
+                        reader.GetInt32("id"),
+                        reader.GetString("first_name"),
+                        reader.GetString("last_name"),
+                        reader.GetString("secret_code"),
+                        reader.GetString("type"),
+                        reader.GetInt32("num_reports"),
+                        reader.GetInt32("num_mentions")
+                        );
+                    potentialAgents.Add(agent);
+                }
+                reader.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error retrieving potential agents: " + ex.Message);
+            }
+            finally
+            {
+                this.Conn.Close();
+            }
+            return potentialAgents;
+        }
     }
 }
