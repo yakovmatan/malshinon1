@@ -8,12 +8,19 @@ CREATE TABLE IF NOT EXISTS people (
     num_mentions INT DEFAULT 0
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
-CREATE TABLE IF NOT EXISTS IntelReports (
+CREATE TABLE IF NOT EXISTS intelReports (
     id INT PRIMARY KEY AUTO_INCREMENT,
     reporter_id INT,
     target_id INT,
     text TEXT,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (reporter_id) REFERENCES people(id),
+    FOREIGN KEY (target_id) REFERENCES people(id)
+) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+
+CREATE TABLE IF NOT EXISTS alerts (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    target_id INT,
+    alert TEXT
     FOREIGN KEY (target_id) REFERENCES people(id)
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
