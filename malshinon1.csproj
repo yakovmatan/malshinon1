@@ -95,6 +95,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="alerts\Alert.cs" />
+    <Compile Include="alerts\DangerTarget.cs" />
     <Compile Include="dal\Dal.cs" />
     <Compile Include="manager\HelpManager.cs" />
     <Compile Include="manager\Manager.cs" />
