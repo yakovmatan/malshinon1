@@ -86,17 +86,18 @@ namespace malshinon1.menu
                         var potentialAgent = this.dal.GetAllPotentialAgent();
                         if (potentialAgent.Count > 0)
                         {
+                            Console.WriteLine("\n=========== POTENTIAL AGENTS ===========\n");
                             foreach (var agent in potentialAgent)
                             {
-                                Console.WriteLine(agent.firstName);
-                                Console.WriteLine(agent.lastName);
-                                Console.WriteLine(agent.secretCode);
-                                Console.WriteLine(agent.numReports);
+                                Console.WriteLine($"👤 Name        : {agent.firstName} {agent.lastName}");
+                                Console.WriteLine($"🆔 Secret Code : {agent.secretCode}");
+                                Console.WriteLine($"📄 Reports     : {agent.numReports}");
+                                Console.WriteLine("----------------------------------------\n");
                             }
                         }
                         else
                         {
-                            Console.WriteLine(" No potential agant found.");
+                            Console.WriteLine("\n⚠️ No potential agant found. \n");
                         }
 
                             break;
@@ -105,16 +106,17 @@ namespace malshinon1.menu
                         var dangerTarget = this.dal.GetAllDangerTarget();
                         if (dangerTarget.Count > 0)
                         {
+                            Console.WriteLine("\n=========== DANGER TARGETS =============\n");
                             foreach (var target in dangerTarget)
                             {
-                                Console.WriteLine(target.firstName);
-                                Console.WriteLine(target.lastName);
-                                Console.WriteLine(target.alert);
+                                Console.WriteLine($"🎯 Name  : {target.firstName} {target.lastName}");
+                                Console.WriteLine($"🚨 Alert : {target.alert}");
+                                Console.WriteLine("----------------------------------------\n");
                             }
                         }
                         else
                         {
-                            Console.WriteLine("No danger targets found.");
+                            Console.WriteLine("\n⚠️ No danger targets found.");
                         }
                             break;
 
