@@ -83,41 +83,11 @@ namespace malshinon1.menu
                         break;
 
                     case "1":
-                        var potentialAgent = this.dal.GetAllPotentialAgent();
-                        if (potentialAgent.Count > 0)
-                        {
-                            Console.WriteLine("\n=========== POTENTIAL AGENTS ===========\n");
-                            foreach (var agent in potentialAgent)
-                            {
-                                Console.WriteLine($"👤 Name        : {agent.firstName} {agent.lastName}");
-                                Console.WriteLine($"🆔 Secret Code : {agent.secretCode}");
-                                Console.WriteLine($"📄 Reports     : {agent.numReports}");
-                                Console.WriteLine("----------------------------------------\n");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("\n⚠️ No potential agant found. \n");
-                        }
-
+                        manager.PrintAllPotentialAgent();
                             break;
 
                     case "2":
-                        var dangerTarget = this.dal.GetAllDangerTarget();
-                        if (dangerTarget.Count > 0)
-                        {
-                            Console.WriteLine("\n=========== DANGER TARGETS =============\n");
-                            foreach (var target in dangerTarget)
-                            {
-                                Console.WriteLine($"🎯 Name  : {target.firstName} {target.lastName}");
-                                Console.WriteLine($"🚨 Alert : {target.alert}");
-                                Console.WriteLine("----------------------------------------\n");
-                            }
-                        }
-                        else
-                        {
-                            Console.WriteLine("\n⚠️ No danger targets found.");
-                        }
+                        manager.PrintAllDangerTargets();
                             break;
 
                     default:

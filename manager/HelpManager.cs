@@ -75,6 +75,7 @@ namespace malshinon1.manager
             int idReporter = personReporter.id;
             Report report = new Report(idReporter, idTarget, text);
             this.Dal.InsertIntelReport(report);
+            Console.WriteLine("The report was added successfully.");
         }
 
         public bool DangerTarget(string secretCode)
@@ -91,6 +92,17 @@ namespace malshinon1.manager
         {
             Alert alert = new Alert(targetId, "poses a potential threat");
             this.Dal.InsertAlert(alert);
+            Console.WriteLine("A new alert has been created.");
+        }
+
+        public bool PotentialAgent(int reporterId)
+        {
+            (int count, double avgLength) = this.Dal.GetReporterStats(reporterId);
+            if (count >= 10 || avgLength >= 100)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -296,7 +296,7 @@ namespace malshinon1.dal
                 this.Conn.Open();
                 var cmd = this.Command(query);
                 cmd.Parameters.AddWithValue("@target_id", alert.targetId);
-                cmd.Parameters.AddWithValue("@text", alert.alert);
+                cmd.Parameters.AddWithValue("@alert", alert.alert);
 
                 cmd.ExecuteNonQuery();
             }
