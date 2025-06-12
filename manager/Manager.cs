@@ -45,7 +45,7 @@ namespace malshinon1.manager
             }
             this.Dal.UpdateMentionCount(target.secretCode);
             this.Helper.CreateNewReport(firstNameOfTarget,lastNameOfTarget,firstNameReporter,lastNameReporter,report);
-            if (this.PotentialAgent(reporter.id))
+            if (this.Helper.PotentialAgent(reporter.id))
             {
                 this.Dal.UpdateStatus(reporter.firstName, reporter.lastName, "potential_agent");
             }
@@ -53,17 +53,46 @@ namespace malshinon1.manager
             {
                 this.Helper.createAlert(target.id);
             }
+        } 
+
+        public void PrintAllDangerTargets()
+        {
+            var dangerTarget = this.Dal.GetAllDangerTarget();
+            if (dangerTarget.Count > 0)
+            {
+                Console.WriteLine("\n=========== DANGER TARGETS =============\n");
+                foreach (var target in dangerTarget)
+                {
+                    Console.WriteLine($"🎯 Name  : {target.firstName} {target.lastName}");
+                    Console.WriteLine($"🚨 Alert : {target.alert}");
+                    Console.WriteLine("----------------------------------------\n");
+                }
+            }
+            else
+            {
+                Console.WriteLine("\n⚠️ No danger targets found.");
+            }
         }
 
-        public bool PotentialAgent(int reporterId)
+        public void PrintAllPotentialAgent()
         {
-            (int count, double avgLength) = this.Dal.GetReporterStats(reporterId);
-            if (count >= 10 ||  avgLength >= 100)
+            var potentialAgent = this.Dal.GetAllPotentialAgent();
+            if (potentialAgent.Count > 0)
             {
-                return true;
+                Console.WriteLine("\n=========== POTENTIAL AGENTS ===========\n");
+                foreach (var agent in potentialAgent)
+                {
+                    Console.WriteLine($"👤 Name        : {agent.firstName} {agent.lastName}");
+                    Console.WriteLine($"🆔 Secret Code : {agent.secretCode}");
+                    Console.WriteLine($"📄 Reports     : {agent.numReports}");
+                    Console.WriteLine("----------------------------------------\n");
+                }
             }
-            return false;
-        }  
+            else
+            {
+                Console.WriteLine("\n⚠️ No potential agant found. \n");
+            }
+        }
         
         
     }
