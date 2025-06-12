@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using malshinon1.alerts;
 using malshinon1.dal;
+using malshinon1.logger;
 using malshinon1.people;
 using malshinon1.reports;
 
@@ -44,7 +45,7 @@ namespace malshinon1.manager
             string secretCode = SecretCode.CreateSecretCode(firstName, lastName);
             Person person = new Person(firstName, lastName,secretCode,type);
             this.Dal.InsertNewPerson(person);
-
+            Logger.Info($"Created new person: {firstName} {lastName}, Type: {type}, SecretCode: {secretCode}");
         }
 
         public string EnterReport()
@@ -75,6 +76,7 @@ namespace malshinon1.manager
             int idReporter = personReporter.id;
             Report report = new Report(idReporter, idTarget, text);
             this.Dal.InsertIntelReport(report);
+            Logger.Info($"New report created successfully by {firstNameReporter} {lastNameReporter} on {firstNameTarget} {lastNameTarget}");
             Console.WriteLine("The report was added successfully.");
         }
 
@@ -92,6 +94,7 @@ namespace malshinon1.manager
         {
             Alert alert = new Alert(targetId, "poses a potential threat");
             this.Dal.InsertAlert(alert);
+            Logger.Info($"new alart created");
             Console.WriteLine("A new alert has been created.");
         }
 
